@@ -12,6 +12,7 @@ To add a new book:
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow" />
   <title>Reading Notes — Archive</title>
+
   <style>
     :root { color-scheme: dark; }
 
@@ -43,6 +44,12 @@ To add a new book:
 
     ul {
       margin-top: 12px;
+      list-style: none;
+      padding-left: 0;
+    }
+
+    li {
+      margin-bottom: 6px;
     }
 
     a {
@@ -59,21 +66,55 @@ To add a new book:
 
 <h1>Reading Notes</h1>
 
-<details open>
+<!--
+To add a new book:
+1. Copy template.html
+2. Rename file
+3. Add a new <li> below with data-date="YYYY-MM-DD"
+-->
+
+<details open data-series>
   <summary>The Gray Man</summary>
-  <ul>
-    <li><a href="grayman-15.html">The Hard Line — #15</a></li>
+  <ul data-books>
+    <li data-date="2026-02-27">
+      <a href="grayman-15.html">The Hard Line — #15</a>
+    </li>
   </ul>
 </details>
 
-<!-- Future series go below like this:
-<details>
+<!-- Future series example:
+<details data-series>
   <summary>Stormlight Archive</summary>
-  <ul>
-    <li><a href="stormlight-1.html">Book 1</a></li>
+  <ul data-books>
+    <li data-date="2024-01-15">
+      <a href="stormlight-4.html">Rhythm of War — #4</a>
+    </li>
   </ul>
 </details>
 -->
+
+<script>
+  (function () {
+    const seriesBlocks = Array.from(document.querySelectorAll('details[data-series]'));
+
+    // Sort books inside each series (newest first)
+    seriesBlocks.forEach(series => {
+      const ul = series.querySelector('ul[data-books]');
+      if (!ul) return;
+
+      const items = Array.from(ul.querySelectorAll('li[data-date]'));
+      items.sort((a, b) => (b.dataset.date || '').localeCompare(a.dataset.date || ''));
+      items.forEach(li => ul.appendChild(li));
+
+      const newest = items[0]?.dataset.date || '0000-00-00';
+      series.dataset.newest = newest;
+    });
+
+    // Sort entire series blocks by newest book date
+    seriesBlocks.sort((a, b) => (b.dataset.newest || '').localeCompare(a.dataset.newest || ''));
+    seriesBlocks.forEach(s => document.body.appendChild(s));
+  })();
+</script>
 
 </body>
 </html>
