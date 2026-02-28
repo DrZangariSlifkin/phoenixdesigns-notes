@@ -1,10 +1,3 @@
-<!--
-To add a new book:
-1. Copy template.html
-2. Rename file
-3. Add link inside correct <details> section below
--->
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -73,7 +66,7 @@ To add a new book:
 3. Add a new <li> below with data-date="YYYY-MM-DD"
 -->
 
-<details open data-series>
+<details data-series>
   <summary>The Gray Man</summary>
   <ul data-books>
     <li data-date="2026-02-27">
@@ -82,7 +75,8 @@ To add a new book:
   </ul>
 </details>
 
-  <details data-series>
+ Test series (delete later if you want)
+<details data-series>
   <summary>Stormlight Archive</summary>
   <ul data-books>
     <li data-date="2025-01-01">
@@ -90,16 +84,7 @@ To add a new book:
     </li>
   </ul>
 </details>
-<!-- Future series example:
-<details data-series>
-  <summary>Stormlight Archive</summary>
-  <ul data-books>
-    <li data-date="2024-01-15">
-      <a href="stormlight-4.html">Rhythm of War — #4</a>
-    </li>
-  </ul>
-</details>
--->
+
 
 <script>
   (function () {
@@ -121,6 +106,11 @@ To add a new book:
     // Sort entire series blocks by newest book date
     seriesBlocks.sort((a, b) => (b.dataset.newest || '').localeCompare(a.dataset.newest || ''));
     seriesBlocks.forEach(s => document.body.appendChild(s));
+
+    // Auto-open only the most recently updated series
+    seriesBlocks.forEach((s, i) => {
+      s.open = (i === 0);
+    });
   })();
 </script>
 
