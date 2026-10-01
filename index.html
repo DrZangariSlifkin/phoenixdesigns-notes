@@ -66,7 +66,7 @@ To add a new book:
 3. Add a new <li> below with data-date="YYYY-MM-DD"
 -->
 
-<details data-series>
+<details data-series="gray-man">
   <summary>The Gray Man</summary>
   <ul data-books>
     <li data-date="2026-02-27">
@@ -78,7 +78,7 @@ To add a new book:
   </ul>
 </details>
 
-<details data-series>
+<details data-series="dungeon-crawler-carl">
   <summary>Dungeon Crawler Carl</summary>
   <ul data-books>
     <li data-date="">
@@ -123,9 +123,25 @@ To add a new book:
     seriesBlocks.sort((a, b) => (b.dataset.newest || '').localeCompare(a.dataset.newest || ''));
     seriesBlocks.forEach(s => document.body.appendChild(s));
 
-    // Auto-open only the most recently updated series
-    seriesBlocks.forEach((s, i) => {
-      s.open = (i === 0);
+    // Remember each series' open/closed state in this browser.
+    seriesBlocks.forEach(series => {
+      const name = series.dataset.series || series.querySelector('summary').textContent.trim();
+      const key = 'reading-notes:series-open:' + name;
+
+      try {
+        const saved = localStorage.getItem(key);
+        if (saved !== null) series.open = (saved === 'true');
+      } catch (error) {
+        // Sections remain usable when browser storage is unavailable.
+      }
+
+      series.addEventListener('toggle', () => {
+        try {
+          localStorage.setItem(key, String(series.open));
+        } catch (error) {
+          // Sections remain usable when browser storage is unavailable.
+        }
+      });
     });
   })();
 </script>
